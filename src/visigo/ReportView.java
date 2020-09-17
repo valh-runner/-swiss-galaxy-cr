@@ -184,8 +184,14 @@ public class ReportView extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox4ActionPerformed
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
-//        String selectedJList1 = ((ComboBoxItem)jList1.getSelectedValue()).getKey();
-//        System.out.println(selectedJList1);
+        if(!jList1.isSelectionEmpty()){
+            if (!evt.getValueIsAdjusting()) {//This line prevents double events
+                String selectedJList1 = ((ComboBoxItem)jList1.getSelectedValue()).getKey();
+                System.out.println(selectedJList1);
+            }
+
+        }
+
     }//GEN-LAST:event_jList1ValueChanged
 
     /**
@@ -274,7 +280,6 @@ public class ReportView extends javax.swing.JFrame {
         
         DefaultListModel<ComboBoxItem> l1 = new DefaultListModel<>();  
         
-//        DefaultComboBoxModel model = new DefaultComboBoxModel();
         for(int i = 0; i < tableRapports.length; i++){
 
             TreeMap < String, Object > treePraticien = (TreeMap < String, Object >)tableRapports[i];
@@ -290,7 +295,6 @@ public class ReportView extends javax.swing.JFrame {
 //            l1.addElement("Item1");  
 //            l1.addElement("Item2");  
 //            l1.addElement("Item3");  
-//            l1.addElement(new ComboBoxItem("0", "Mon premier element"));  
             l1.addElement(new ComboBoxItem(rap_num, rap_date));
 //            JList<String> list = new JList<>(l1);  
 
@@ -299,7 +303,6 @@ public class ReportView extends javax.swing.JFrame {
 //            jList.(l1);
         }
         jList.setModel(l1);
-//        jComboBox.setModel(model);
     }
     
     
