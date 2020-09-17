@@ -130,6 +130,9 @@ public class ConnectionManager {
                 for(int j = 0; j < resColCount; j++){
                     try{
                         switch(tableColTypes[j]){
+                            case -7:
+                                resLine.put(tableColNames[j], rs.getInt(tableColNames[j]));
+                                break;
                             case 4:
                                 resLine.put(tableColNames[j], rs.getInt(tableColNames[j]));
                                 break;

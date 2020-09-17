@@ -77,8 +77,8 @@ public class Menu extends JFrame {
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent event) {
-                Report report = new Report();
-                report.setVisible(true);
+                Report2 report2 = new Report2();
+                report2.setVisible(true);
             }
         });
         button6.addActionListener(new ActionListener() {
