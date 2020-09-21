@@ -139,6 +139,9 @@ public class ConnectionManager {
                             case 5:
                                 resLine.put(tableColNames[j], rs.getInt(tableColNames[j]));
                                 break;
+                            case 8:
+                                resLine.put(tableColNames[j], rs.getDouble(tableColNames[j]));
+                                break;
                             case 12:
                                 resLine.put(tableColNames[j], rs.getString(tableColNames[j]));
                                 break;
@@ -171,11 +174,11 @@ public class ConnectionManager {
         return resTab;
     }
     
-    public static void requestWrite(String req, TreeMap < Integer, Object > requestValues){
-        
+    public static int requestWrite(String req, TreeMap < Integer, Object > requestValues){
+        int generatedKey = 0;
         Connection con = ConnectionManager.getConnection();
         try {
-            PreparedStatement preparedStatement = con.prepareStatement(req);
+            PreparedStatement preparedStatement = con.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
             
 //            Set<String> keys = tm.keySet();
 //            for(String requestValue: requestValues){
@@ -201,6 +204,15 @@ public class ConnectionManager {
             preparedStatement.setString(7, rap_motif);*/
             preparedStatement.executeUpdate(); 
             
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            
+            
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+//            System.out.println("Inserted record's ID: " + generatedKey);
+            
+            
             preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Failed to create connection statement");
@@ -214,7 +226,7 @@ public class ConnectionManager {
                 }
             }
         }
-        
+        return generatedKey;
     }
 
 }

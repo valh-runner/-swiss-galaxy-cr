@@ -5,29 +5,48 @@
  */
 package visigo;
 
-import com.mysql.jdbc.Statement;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author Home
  */
 public class Report extends javax.swing.JFrame {
-    
+
     private Object[] tablePraticiens;
+    private boolean isEditing = false;
+    private int lastExistantReportNumDisplayed = 0;
+    private static Object[] tableMedicaments;
+    JButton button = new JButton();
+    private JButton btn;
+    private int clickedDeleteButtonRowNum = -1;
+    private Object[] tableOffrirLast;
 
     /**
      * Creates new form Report
@@ -37,6 +56,7 @@ public class Report extends javax.swing.JFrame {
         proceed();
     }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -46,8 +66,20 @@ public class Report extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        jComboBox4 = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        jButton3 = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -61,7 +93,17 @@ public class Report extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+
+        jButton6.setText("jButton6");
+
+        jButton7.setText("jButton7");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -69,7 +111,69 @@ public class Report extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("RAPPORTS DE VISITE - nouveau");
+        jLabel1.setText("RAPPORTS DE VISITE");
+
+        jPanel3.setMinimumSize(new java.awt.Dimension(0, 0));
+
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Visiteur :");
+
+        jComboBox4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox4ActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Rapports :");
+
+        jScrollPane1.setViewportView(jList1);
+
+        jButton3.setText("Afficher le rapport");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jComboBox4, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 14, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton3)
+                .addGap(19, 19, 19))
+        );
+
+        jButton2.setText("Nouveau rapport");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel3.setText("Praticien");
 
@@ -95,7 +199,7 @@ public class Report extends javax.swing.JFrame {
 
         jLabel5.setText("Motif visite");
 
-        jLabel6.setText("BILAN");
+        jLabel6.setText("Bilan");
 
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
@@ -108,69 +212,168 @@ public class Report extends javax.swing.JFrame {
             }
         });
 
+        jButton4.setText("Mettre à jour");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Editer");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Médicament", "Nb. Echantillons"
+            }
+        ));
+        jTable1.setName(""); // NOI18N
+        jScrollPane3.setViewportView(jTable1);
+
+        jButton8.setText("Suppr. ligne sélectionnée");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        jButton9.setText("Ajout ligne");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(79, 79, 79)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jTextField2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(214, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                        .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)))
-                .addGap(50, 50, 50))
+                        .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton8))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jScrollPane2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton8)
+                            .addComponent(jButton9))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(50, 50, 50))
+                    .addComponent(jButton5)
+                    .addComponent(jButton4))
+                .addGap(16, 16, 16))
+        );
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(16, 16, 16))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -181,7 +384,7 @@ public class Report extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -189,7 +392,7 @@ public class Report extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -206,17 +409,85 @@ public class Report extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jComboBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox4ActionPerformed
+        this.refreshRapportsList();
+    }//GEN-LAST:event_jComboBox4ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.addInBase();
+        this.refreshRapportsList(); // to display created rapport in the list
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        synchroCheck();
+        this.synchroCheck();
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         this.refreshComboBox3();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.addInBase();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (this.isCanSwitchDisplay() == true) {
+            jPanel2.setVisible(true);
+            this.newRapport();
+            this.isEditing = true;
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (!jList1.isSelectionEmpty()) {
+            if (this.isCanSwitchDisplay() == true) {
+                this.isEditing = false;
+                String selectedRapportKey = ((ComboBoxItem) jList1.getSelectedValue()).getKey();
+                this.displayRapport(Integer.valueOf(selectedRapportKey));
+                jPanel2.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (this.lastExistantReportNumDisplayed != 0) {
+            this.updateInBase(this.lastExistantReportNumDisplayed);
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (this.lastExistantReportNumDisplayed != 0) {
+            this.isEditing = true;
+            this.setRapportNormal();
+            jButton5.setVisible(false);
+            jButton4.setVisible(true);
+            jButton8.setVisible(true);
+            jButton9.setVisible(true);
+            synchroCheck();
+            populateJTable(this.lastExistantReportNumDisplayed, this.isEditing);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // vérifier d'abord la ligne sélectionnée
+        if(jTable1.getSelectedRow() != -1){
+           // supprimer la ligne sélectionnée du modèle de table
+           ((DefaultTableModel)jTable1.getModel()).removeRow(jTable1.getSelectedRow());
+            // reformatage de l'index de lignes
+            int nbrLines = jTable1.getRowCount();
+            for (int i = 0; i < nbrLines; i++) {
+                    jTable1.getModel().setValueAt(i+1, i, 0);
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        int rowsNumber = jTable1.getRowCount();
+        int lastlineNumberId;
+        if(rowsNumber == 0){
+            lastlineNumberId = 0;
+        }else{
+            int lastLineNum = jTable1.getRowCount()-1;
+            lastlineNumberId = (int) jTable1.getModel().getValueAt(lastLineNum, 0);
+        }
+        ((DefaultTableModel)jTable1.getModel()).addRow(new Object[]{lastlineNumberId + 1, "SELECT", "1"});
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -244,6 +515,9 @@ public class Report extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Report.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -255,42 +529,45 @@ public class Report extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<ComboBoxItem> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<ComboBoxItem> jComboBox3;
+    private javax.swing.JComboBox<ComboBoxItem> jComboBox4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JList<ComboBoxItem> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
     private void proceed() {
-        String req = "SELECT PRA_NUM, PRA_NOM, PRA_PRENOM, PRA_CP FROM praticien ORDER BY PRA_NOM;";
-        this.tablePraticiens = ConnectionManager.requestRead(req);
-        
-        jComboBox1.addItem(new ComboBoxItem("0", "SELECT"));
-        populateComboBoxWithPraticiens(jComboBox1, this.tablePraticiens);
-        populateComboBoxWithPraticiens(jComboBox3, this.tablePraticiens);
-        
-        jComboBox2.addItem("Périodicité");
-        jComboBox2.addItem("Nouveautés");
-        jComboBox2.addItem("Chute de prescription");
-        jComboBox2.addItem("Demande du praticien");
-        jComboBox2.setEditable(true);
-
-        java.util.Date currentDate = new java.util.Date();
-        DateFormat df3 = new SimpleDateFormat("dd/MM/yyyy");
-        jTextField2.setText(df3.format(currentDate));
-        
-        synchroCheck();
+        jPanel2.setVisible(false);
+        this.populateComboBoxWithVisiteurs(); // CONSULTATION INIT
+        this.haveMedicaments();
     }
 
     private void synchroCheck() {
@@ -301,110 +578,488 @@ public class Report extends javax.swing.JFrame {
             jComboBox3.setSelectedIndex(0);
         }
     }
-    
-    private void populateComboBoxWithPraticiens(JComboBox jComboBox, Object[] tablePraticiens){
+
+    private void populateComboBoxWithPraticiens(JComboBox jComboBox, Object[] tablePraticiens) {
         populateComboBoxWithPraticiens(jComboBox, tablePraticiens, 0);
     }
-    
-    private void populateComboBoxWithPraticiens(JComboBox jComboBox, Object[] tablePraticiens, int praNumToAvoid){
-        
-//        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for(int i = 0; i < tablePraticiens.length; i++){
-            boolean isOkToAdd = true;
 
-            TreeMap < String, Object > treePraticien = (TreeMap < String, Object >)tablePraticiens[i];
-            int pra_id = (int)treePraticien.get("PRA_NUM");
-            String pra_nom = (String)treePraticien.get("PRA_NOM");
-            String pra_prenom = (String)treePraticien.get("PRA_PRENOM");
-            String pra_cp = (String)treePraticien.get("PRA_CP");
+    private void populateComboBoxWithPraticiens(JComboBox jComboBox, Object[] tablePraticiens, int praNumToAvoid) {
+        for (int i = 0; i < tablePraticiens.length; i++) {
+            boolean isOkToAdd = true;
             
-            if(praNumToAvoid != 0){
-                if(praNumToAvoid == pra_id){
-                    isOkToAdd = false;
-                }
+            TreeMap< String, Object> treePraticien = (TreeMap< String, Object>) tablePraticiens[i];
+            int pra_id = (int) treePraticien.get("PRA_NUM");
+            String pra_nom = (String) treePraticien.get("PRA_NOM");
+            String pra_prenom = (String) treePraticien.get("PRA_PRENOM");
+            String pra_cp = (String) treePraticien.get("PRA_CP");
+
+            if (praNumToAvoid != 0) {
+                if (praNumToAvoid == pra_id) {isOkToAdd = false;}
             }
-            if(isOkToAdd){
-//                model.addElement(new ComboBoxItem(pra_id, pra_nom + " " + pra_prenom + " (" + pra_cp + ")"));
-                jComboBox.addItem(new ComboBoxItem(String.valueOf(pra_id), pra_nom + " " + pra_prenom + " (" + pra_cp + ")"));
+            if (isOkToAdd) {
+                ComboBoxItem comboBoxItemToAdd = new ComboBoxItem(String.valueOf(pra_id), pra_nom + " " + pra_prenom + " (" + pra_cp + ")");
+                jComboBox.addItem(comboBoxItemToAdd);
             }
         }
-//        jComboBox.setModel(model);
     }
-    
-    private void refreshComboBox3(){
+
+    private void refreshComboBox3() {
         jComboBox3.removeAllItems();
-        jComboBox3.addItem(new ComboBoxItem("0", "SELECTIONNEZ"));
-        int selectedPraNum = Integer.parseInt(((ComboBoxItem)jComboBox1.getSelectedItem()).getKey());
-        populateComboBoxWithPraticiens(jComboBox3, this.tablePraticiens, selectedPraNum);
+        jComboBox3.addItem(new ComboBoxItem("0", "NON CONNU"));
+        if ((ComboBoxItem) jComboBox1.getSelectedItem() != null) {
+            int selectedPraNum = Integer.parseInt(((ComboBoxItem) jComboBox1.getSelectedItem()).getKey());
+            populateComboBoxWithPraticiens(jComboBox3, this.tablePraticiens, selectedPraNum);
+        }
     }
-    
-    private void addInBase(){
-        
+
+    private void addInBase() {
+        this.updateInBase(0);
+    }
+
+    private void updateInBase(int rapNumToUpdate) {
         boolean isValid = true;
-        
-        int pra_num = Integer.parseInt(((ComboBoxItem)jComboBox1.getSelectedItem()).getKey());
+        String errorMsg = null;
+
+        int pra_num = Integer.parseInt(((ComboBoxItem) jComboBox1.getSelectedItem()).getKey());
         int rap_estremplace = 0;
         int pra_num_remplacant = 0;
         String rap_date = jTextField2.getText();
         String rap_motif = jComboBox2.getSelectedItem().toString();
         String rap_bilan = null;
-        
-        if(jCheckBox1.isSelected()){
+
+        if (jCheckBox1.isSelected()) {
             rap_estremplace = 1;
-            pra_num_remplacant = Integer.parseInt(((ComboBoxItem)jComboBox3.getSelectedItem()).getKey());
+            pra_num_remplacant = Integer.parseInt(((ComboBoxItem) jComboBox3.getSelectedItem()).getKey());
         }
-        //si bilan non vide
-        if(!jTextArea2.getText().equals("")){
-            rap_bilan = jTextArea2.getText();
-        }
-        
+        if (!jTextArea2.getText().equals("")) { rap_bilan = jTextArea2.getText(); } //si bilan non vide
+
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         java.util.Date date = null;
-        
+
         try {
             date = df.parse(rap_date);
         } catch (ParseException e) {
-//            System.err.println("Format de date invalide. Usage : DD/MM/AAAA");
-//            System.err.println(e.getMessage());
             isValid = false;
-            jLabel2.setText("Format de la date non valide");
+            errorMsg = "Format de la date non valide - Usage : DD/MM/AAAA";
         }
         java.sql.Date date_sql = new java.sql.Date(date.getTime());
+
+        if (pra_num == 0) {isValid = false;} //si praticien non choisi
+        if (rap_motif.equals("")) {isValid = false;} //si motif vide
+        if (rap_date.equals("")) {isValid = false;} //si date vide
         
-        //si praticien non choisi
-        if(pra_num == 0){
+//        jTable1.();
+        if(!this.isValideJTableEchantillon()){
             isValid = false;
+            errorMsg = "champ non conforme dans table échantillons";
         }
-        //si motif vide
-        if(rap_motif.equals("")){
-            isValid = false;
-        }
-        //si date vide
-        if(rap_date.equals("")){
-            isValid = false;
-        }
-        
-        if(isValid){
-            jLabel2.setText("Enregistrement effectué");
-            TreeMap < Integer, Object > requestValues = new TreeMap <> ( );
+
+        if (isValid) {
+
+            TreeMap< Integer, Object> requestValues = new TreeMap<>();
             requestValues.put(1, ConnectionManager.getUserMatricule());
             requestValues.put(2, pra_num);
             requestValues.put(3, rap_estremplace);
-            if(pra_num_remplacant == 0){
+            if (pra_num_remplacant == 0) {
                 requestValues.put(4, null);
-            }else{
+            } else {
                 requestValues.put(4, pra_num_remplacant);
             }
             requestValues.put(5, date_sql);
             requestValues.put(6, rap_bilan);
             requestValues.put(7, rap_motif);
 
-            String req = "INSERT INTO rapport_visite (VIS_MATRICULE, PRA_NUM, RAP_ESTREMPLACE, PRA_NUM_REMPLACANT, RAP_DATE, RAP_BILAN, RAP_MOTIF) VALUES(?, ?, ?, ?, ?, ?, ?)";
-            ConnectionManager.requestWrite(req, requestValues);
-        }else{
-            jLabel2.setText("Un champ requis n'a pas été rempli");
+            String req;
+            if (rapNumToUpdate == 0) {
+                req = "INSERT INTO rapport_visite (VIS_MATRICULE, PRA_NUM, RAP_ESTREMPLACE, PRA_NUM_REMPLACANT, RAP_DATE, RAP_BILAN, RAP_MOTIF) "
+                        + "VALUES(?, ?, ?, ?, ?, ?, ?)";
+            } else {
+                requestValues.put(8, rapNumToUpdate);
+                req = "UPDATE rapport_visite SET VIS_MATRICULE = ?, PRA_NUM = ?, RAP_ESTREMPLACE = ?, PRA_NUM_REMPLACANT = ?, RAP_DATE = ?, RAP_BILAN = ?, RAP_MOTIF = ? "
+                        + "WHERE RAP_NUM = ?";
+            }
+            int insertedRapId = ConnectionManager.requestWrite(req, requestValues);
+            
+            // ECHANTILLONS
+            // Si Rapport pré-existant, suppression des échantillons offerts du rapport
+            if(rapNumToUpdate != 0){
+                String req2 = "DELETE FROM offrir WHERE RAP_NUM = ?";
+                TreeMap< Integer, Object> requestValues2 = new TreeMap<>();
+                requestValues2.put(1, rapNumToUpdate);
+                ConnectionManager.requestWrite(req2, requestValues2);
+            }
+            // Pour chaque donnée de la JTable d'échantillons
+            for (int i = 0; i < jTable1.getRowCount(); i++) {
+                
+                int value1 = (int) jTable1.getModel().getValueAt(i, 0);
+                String value2 = (String) jTable1.getModel().getValueAt(i, 1);
+                int value3 = Integer.parseInt(jTable1.getModel().getValueAt(i, 2).toString());
+                // Récupération code identifieur du médicament
+                String depotLegal = null;
+                for (int j = 0; j < Report.tableMedicaments.length; j++) {
+                    TreeMap< String, Object> treeRapport = (TreeMap< String, Object>) Report.tableMedicaments[j];
+                    String nomCommercial = String.valueOf(treeRapport.get("MED_NOMCOMMERCIAL"));
+                    if(value2.equals(nomCommercial)){
+                        depotLegal = String.valueOf(treeRapport.get("MED_DEPOTLEGAL"));
+                    }
+                }
+                // Insertion ligne échantillon offert
+                String req3 = "INSERT INTO offrir (RAP_NUM, MED_DEPOTLEGAL, OFF_QTE) "
+                        + "VALUES(?, ?, ?)";
+                TreeMap< Integer, Object> requestValues3 = new TreeMap<>();
+                if (rapNumToUpdate == 0) {
+                    requestValues3.put(1, insertedRapId);
+                } else {
+                    requestValues3.put(1, rapNumToUpdate);
+                }
+                requestValues3.put(2, depotLegal);
+                requestValues3.put(3, value3);
+                ConnectionManager.requestWrite(req3, requestValues3);
+            }
+            
+            jPanel2.setVisible(false);
+            this.isEditing = false;
+
+            Tools.displayMessageTemporary(jLabel2, "Enregistrement effectué");
+        } else {
+            if(errorMsg == null){
+                errorMsg = "Un champ requis n'a pas été rempli";
+            }
+            Tools.displayMessageTemporary(jLabel2, errorMsg);
         }
+    }
+
+    private void populateComboBoxWithVisiteurs() {
+        String req2 = "SELECT VIS_MATRICULE, VIS_NOM, VIS_PRENOM FROM visiteur ORDER BY VIS_NOM;";
+        Object[] tableVisiteurs = ConnectionManager.requestRead(req2);
+        jComboBox4.addItem(new ComboBoxItem("0", "SELECTIONNEZ"));
+        
+        for (int i = 0; i < tableVisiteurs.length; i++) {
+            TreeMap< String, Object> treePraticien = (TreeMap< String, Object>) tableVisiteurs[i];
+            String pra_id = (String) treePraticien.get("VIS_MATRICULE");
+            String pra_nom = (String) treePraticien.get("VIS_NOM");
+            String pra_prenom = (String) treePraticien.get("VIS_PRENOM");
+            jComboBox4.addItem(new ComboBoxItem(pra_id, pra_nom + " " + pra_prenom));
+        }
+    }
+
+    private void refreshRapportsList() {
+        String selectedVisiteurMatricule = ((ComboBoxItem) jComboBox4.getSelectedItem()).getKey();
+        DefaultListModel<ComboBoxItem> l1 = new DefaultListModel<>();
+        
+        if (!selectedVisiteurMatricule.equals("0")) {
+            String req3 = "SELECT RAP_NUM, RAP_DATE FROM rapport_visite WHERE VIS_MATRICULE = \"" + selectedVisiteurMatricule + "\";";
+            Object[] tableRapports = ConnectionManager.requestRead(req3);
+            
+            for (int i = 0; i < tableRapports.length; i++) {
+                TreeMap< String, Object> treeRapport = (TreeMap< String, Object>) tableRapports[i];
+                String rap_num = String.valueOf(treeRapport.get("RAP_NUM"));
+                String rap_date = String.valueOf(treeRapport.get("RAP_DATE"));
+
+                l1.addElement(new ComboBoxItem(rap_num, rap_num + " | " + rap_date));
+            }
+        }
+        jList1.setModel(l1);
+    }
+
+    private void newRapport() {
+        this.reinitFormRapport();
+
+        java.util.Date currentDate = new java.util.Date();
+        DateFormat df3 = new SimpleDateFormat("dd/MM/yyyy");
+        jTextField2.setText(df3.format(currentDate));
+
+        jButton1.setVisible(true);
+        jButton8.setVisible(true);
+        jButton9.setVisible(true);
+        synchroCheck();
+        
+        populateJTable(0, true);
+    }
+
+    private void reinitFormRapport() {
+
+        String req = "SELECT PRA_NUM, PRA_NOM, PRA_PRENOM, PRA_CP FROM praticien ORDER BY PRA_NOM;";
+        Object[] tablePraticiens = ConnectionManager.requestRead(req);
+        this.tablePraticiens = tablePraticiens;
+
+        jComboBox1.removeAllItems();
+        jComboBox1.addItem(new ComboBoxItem("0", "SELECT"));
+        populateComboBoxWithPraticiens(jComboBox1, tablePraticiens);
+
+        jCheckBox1.setSelected(false);
+
+        jComboBox3.removeAllItems();
+        jComboBox3.addItem(new ComboBoxItem("0", "SELECTIONNEZ"));
+        populateComboBoxWithPraticiens(jComboBox3, tablePraticiens);
+
+        jTextField2.setText("");
+
+        jComboBox2.removeAllItems();
+        jComboBox2.addItem("Périodicité");
+        jComboBox2.addItem("Nouveautés");
+        jComboBox2.addItem("Chute de prescription");
+        jComboBox2.addItem("Demande du praticien");
+        jComboBox2.setEditable(true);
+
+        jTextArea2.setText("");
+
+        setRapportNormal();
+    }
+
+    private void displayRapport(int rapportNum) {
+        this.reinitFormRapport();
+
+        String req = "SELECT * FROM rapport_visite WHERE RAP_NUM = \"" + rapportNum + "\";";
+        Object[] tableRapports = ConnectionManager.requestRead(req);
+
+        TreeMap< String, Object> treeRapport = (TreeMap< String, Object>) tableRapports[0];
+        int rap_num = (int) treeRapport.get("RAP_NUM");
+        String vis_matricule = (String) treeRapport.get("VIS_MATRICULE");
+        int pra_num = (int) treeRapport.get("PRA_NUM");
+        int rap_estRemplace = (int) treeRapport.get("RAP_ESTREMPLACE");
+        int rap_numRemplacant = (int) treeRapport.get("PRA_NUM_REMPLACANT");
+        String rap_date = treeRapport.get("RAP_DATE").toString();
+        String rap_motif = (String) treeRapport.get("RAP_MOTIF");
+        String rap_bilan = (String) treeRapport.get("RAP_BILAN");
+
+        Tools.setSelectedValue(jComboBox1, pra_num);
+        if (rap_estRemplace == 0) {
+            jCheckBox1.setSelected(false);
+        } else {
+            jCheckBox1.setSelected(true);
+        }
+        Tools.setSelectedValue(jComboBox3, rap_numRemplacant);
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
+        java.util.Date date = null;
+        try {
+            date = df.parse(rap_date);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        String date2 = df2.format(date);
+        jTextField2.setText(date2);
+
+        boolean isStandardSelectedMotif = false;
+        for (int i = 0; i < jComboBox2.getItemCount(); i++) {
+            String item = jComboBox2.getItemAt(i);
+            if (item.equals(rap_motif)) {
+                jComboBox2.setSelectedIndex(i);
+                isStandardSelectedMotif = true;
+                break;
+            }
+        }
+        if (isStandardSelectedMotif == false) {
+            jComboBox2.addItem(rap_motif);
+            jComboBox2.setSelectedItem(rap_motif);
+        }
+
+        jTextArea2.setText(rap_bilan);
+
+        setRapportReadOnly();
+        this.lastExistantReportNumDisplayed = rap_num;
+        populateJTable(rap_num, this.isEditing);
+        
+        if (vis_matricule.equals((String) ConnectionManager.getUserMatricule())) {
+            
+            jButton5.setVisible(true);
+        }
+    }
+
+    public void setRapportNormal() {
+        Tools.setComboBoxNormal(jComboBox1);
+        jCheckBox1.setEnabled(true);
+        Tools.setComboBoxNormal(jComboBox3);
+        jTextField2.setDisabledTextColor(new Color(184, 207, 229));
+        jTextField2.setEnabled(true);
+        Tools.setComboBoxNormal(jComboBox2);
+        jComboBox2.setEditable(true); //set again - wanted as editable by default
+        jTextArea2.setEditable(true);
+        jButton1.setVisible(false);
+        jButton5.setVisible(false);
+        jButton4.setVisible(false);
+        jButton8.setVisible(false);
+        jButton9.setVisible(false);
+    }
+
+    public void setRapportReadOnly() {
+        Tools.setComboBoxReadOnly(jComboBox1);
+        jCheckBox1.setEnabled(false);
+        Tools.setComboBoxReadOnly(jComboBox3);
+        jTextField2.setDisabledTextColor(new Color(51, 51, 51));
+        jTextField2.setEnabled(false);
+        Tools.setComboBoxReadOnly(jComboBox2);
+        jTextArea2.setEditable(false);
+        jButton1.setVisible(false);
+        jButton5.setVisible(false);
+        jButton4.setVisible(false);
+        jButton8.setVisible(false);
+        jButton9.setVisible(false);
+    }
+
+    public boolean isCanSwitchDisplay() {
+        boolean isCanSwitch = false;
+
+        if (this.isEditing) {
+            int confirmInput = JOptionPane.showConfirmDialog(this,
+                    "Voulez-vous fermer le rapport en cours d'édition?", "title", OK_CANCEL_OPTION);
+            if (confirmInput == JOptionPane.YES_OPTION) {
+                isCanSwitch = true;
+            }
+        } else {
+            isCanSwitch = true;
+        }
+        return isCanSwitch;
+    }
+
+    /**
+     * Cette classe combine la notion d'éditeur sous forme de combo et de
+     * renderer sous forme de combo On utilise un DefaultCellEditor qui a déjà
+     * toute la mécanique pour gérer un TableCellEditor de type combo
+     */
+    public static class ComboCellEditor extends DefaultCellEditor implements TableCellRenderer {
+
+        private JComboBox<String> combo;
+
+        public ComboCellEditor() {
+            super(new JComboBox<>());  // on créé le DefaultCellEditor en lui passant la combo
+            combo = (JComboBox<String>) getComponent();  // je récupère la combo passé dans le constructeur juste avant parce que je vais avoir besoin de travailler avec plus tard (je la stocke dans un attribut donc)
+            // combo.setEditable(true); // éventuellement pour rendre la saisie libre (ici on peut aussi ajouter l'autocompletion)
+            combo.addFocusListener(new FocusAdapter() { // j'enregistre un focuslistener qui va réagir quand la combo prend le focus pour ouvrir automatiquement la liste de la combo (dès qu'on va commencer à taper dans le champ, la combo va passer en édition et donc afficher la liste déroulante)
+                @Override
+                public void focusGained(FocusEvent arg0) {
+                    combo.setPopupVisible(true);
+                }
+            });
+            super.setClickCountToStart(1); // je réduis le nombre de clic pour passer en édition à 1 (par défaut dans une JTable, c'est 2, d'où le besoin de double-cliquer)
+        }
+
+        // méthode de TableCellEditor destinée à créer le composant éditeur qui sera utilisé pour modifier la valeur de la cellule en cours d'édition dans la JTable
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            combo.setModel(new DefaultComboBoxModel<>(loadValues((Integer) table.getModel().getValueAt(row, 0)))); // je remplis la combo avec un nouveau modèle contenant le résultat de ma requête
+            if (isSelected) { // pour afficher la combo sélectionnée quand la cellule est séctionnée
+                combo.setBackground(table.getSelectionBackground());
+            } else { // sinon je l'affiche dans la couleur normal
+                combo.setBackground(table.getBackground());
+            }
+            return super.getTableCellEditorComponent(table, value, isSelected, row, column); // je rappelle la méthode normale qui va se charger du reste du rendu de l'éditeur
+        }
+
+        // méthode de TableCellRenderer destinée à créer le composant qui affiche la valeur dans la colonne
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JComboBox<String> renderCombo = new JComboBox<>(new DefaultComboBoxModel<>(new String[]{(String) value})); // je créé une nouvelle combo avec juste une valeur pour faire un rendu qui ressemble à un éditeur
+            // ici, normalement on doit faire tout le rendu standard, en fonction de isSelected et hasFocus (ici, seul selected est traité)
+            if (isSelected) {
+                renderCombo.setBackground(table.getSelectionBackground());
+            } else {
+                renderCombo.setBackground(table.getBackground());
+            }
+            return renderCombo;
+        }
+
+    }
+
+    public void haveMedicaments() {
+        String req4 = "SELECT * FROM medicament ORDER BY MED_NOMCOMMERCIAL;";
+        this.tableMedicaments = ConnectionManager.requestRead(req4);
+    }
+
+    public static String[] loadValues(int value) {
+        String[] comboMedicData = new String[Report.tableMedicaments.length + 1];
+
+        comboMedicData[0] = "SELECT";
+        for (int i = 0; i < Report.tableMedicaments.length; i++) {
+
+            TreeMap< String, Object> treeMedicament = (TreeMap< String, Object>) Report.tableMedicaments[i];
+            String medDepotLegal = (String) treeMedicament.get("MED_DEPOTLEGAL");
+            String medNomCommercial = (String) treeMedicament.get("MED_NOMCOMMERCIAL");
+
+            comboMedicData[i + 1] = medNomCommercial;
+        }
+
+        return comboMedicData;
+    }
+    
+    public void populateJTable(int rapNum, boolean editable) {
+        Object[][] data;
+        if(rapNum == 0){
+            data = new Object[0][];
+        }else{
+            String req4 = "SELECT * FROM offrir, medicament WHERE offrir.MED_DEPOTLEGAL = medicament.MED_DEPOTLEGAL AND RAP_NUM = "+ rapNum +";";
+            Object[] tableOffrir = ConnectionManager.requestRead(req4);
+            this.tableOffrirLast = tableOffrir;
+
+            data = new Object[tableOffrir.length][];
+            for (int i = 0; i < tableOffrir.length; i++) {
+                TreeMap< String, Object> treeOffert = (TreeMap< String, Object>) tableOffrir[i];
+                int rap_num = (int) treeOffert.get("RAP_NUM");
+                String medDepotLegal = String.valueOf(treeOffert.get("MED_DEPOTLEGAL"));
+                String offQte = String.valueOf(treeOffert.get("OFF_QTE"));
+                String medNomCommercial = (String) treeOffert.get("MED_NOMCOMMERCIAL");
+
+                data[i] = new Object[]{i+1, medNomCommercial, offQte};
+            }
+        }
+        
+        // les titres des colonnes
+        String[] title = {"N°", "Médicament", "Nb. Echantillons"};
+        
+        DefaultTableModel model = new DefaultTableModel(data, title){
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                    if(editable){
+                        if(col == 0){return false;}
+                        return true;
+                    }else{
+                        return false;
+                    }
+            };
+        };
+        jTable1.setModel(model);
+        
+        TableColumnModel columnModel = jTable1.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(22);
+        columnModel.getColumn(0).setMaxWidth(22);
+        
+        ComboCellEditor comboCellEditor = new ComboCellEditor(); // je créé une instance de ma classe de rendu/éditeur
+        jTable1.getColumnModel().getColumn(1).setCellRenderer(comboCellEditor); // je l'affecte à la colonne 3 en tant que composant de rendu
+        jTable1.getColumnModel().getColumn(1).setCellEditor(comboCellEditor); // je l'affecte à la colonne 3 en tant qu'éditeur
+
+        jTable1.setSurrendersFocusOnKeystroke(true); // nécessaire pour avoir la combo qui passe en édition quand on commence à taper
+        jTable1.setRowHeight(22); // agrandissement hauteur de ligne jTable1
+        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // used to delete the selected line if wanted
+        jTable1.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE); // used to stop editing / take consideration of last string insert when click to submit without the need to loose the focus by clicking on other cell
+    }
+
+    public boolean isValideJTableEchantillon() {
+        boolean isValid = true;
+        
+        int nbrLines = jTable1.getRowCount();
+        for (int i = 0; i < nbrLines; i++) {
+            String value2 = (String) jTable1.getModel().getValueAt(i, 1);
+            String value3 = (String) jTable1.getModel().getValueAt(i, 2);
+            
+            if(value2.equals("SELECT")){
+                isValid = false;
+            }
+            
+            if(!Tools.isNumeric(value3)){
+                System.out.println(value3+" sfds");
+                isValid = false;
+            }else{
+                System.out.println(value3+" oili");
+                if(Integer.parseInt(value3) <= 0){
+                    isValid = false;
+                    System.out.println(value3+" jhgjh");
+                }
+            }
+        }
+        return isValid;
     }
 
 }
