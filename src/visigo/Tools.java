@@ -59,4 +59,14 @@ public class Tools {
         jComboBox.setEnabled(true);
     }
     
+    public static boolean isNumeric(String str) {
+        boolean isValid = true;
+        try{ Integer.parseInt(str); }
+        catch(NumberFormatException nfe){ 
+            System.out.println(str +" est pas num");
+            isValid = false;
+        }
+        System.out.println(str +" est num");
+        return isValid;
+    }
 }

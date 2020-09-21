@@ -20,13 +20,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import java.awt.Desktop;
-import java.net.URI;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 import javax.swing.SwingUtilities;
 
 /**
@@ -37,14 +30,12 @@ public class Menu extends JFrame {
 
     private final JPanel container = new JPanel();
     private final JButton button1 = new JButton();
-    private final JButton button6 = new JButton();
     private final JButton button2 = new JButton();
     private final JButton button3 = new JButton();
     private final JButton button4 = new JButton();
     private final JButton button5 = new JButton();
     private final JButton button7 = new JButton();
-    private final JLabel label1 = new JLabel("Nouveau Compte-Rendu");
-    private final JLabel label6 = new JLabel("Comptes-Rendus");
+    private final JLabel label1 = new JLabel("Comptes-Rendus");
     private final JLabel label2 = new JLabel("Visiteurs");
     private final JLabel label3 = new JLabel("Praticiens");
     private final JLabel label4 = new JLabel("Medicaments");
@@ -71,21 +62,13 @@ public class Menu extends JFrame {
         button3.setPreferredSize(new Dimension(20, 20));
         button4.setPreferredSize(new Dimension(20, 20));
         button5.setPreferredSize(new Dimension(20, 20));
-        button6.setPreferredSize(new Dimension(20, 20));
         button7.setPreferredSize(new Dimension(20, 20));
         
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent event) {
-                Report2 report2 = new Report2();
-                report2.setVisible(true);
-            }
-        });
-        button6.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent event) {
-                ReportView reportView = new ReportView();
-                reportView.setVisible(true);
+                Report report = new Report();
+                report.setVisible(true);
             }
         });
         button7.addActionListener(new ActionListener() {
@@ -107,10 +90,6 @@ public class Menu extends JFrame {
         panWrap1.setLayout(new FlowLayout(FlowLayout.LEFT));  
         panWrap1.add(button1);
         panWrap1.add(label1);
-        JPanel panWrap6 = new JPanel();
-        panWrap6.setLayout(new FlowLayout(FlowLayout.LEFT));  
-        panWrap6.add(button6);
-        panWrap6.add(label6);
         JPanel panWrap2 = new JPanel();
         panWrap2.setLayout(new FlowLayout(FlowLayout.LEFT)); 
         panWrap2.add(button2);
@@ -134,7 +113,6 @@ public class Menu extends JFrame {
         
         center.setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
         center.add(panWrap1);
-        center.add(panWrap6);
         center.add(panWrap2);
         center.add(panWrap3);
         center.add(panWrap4);
