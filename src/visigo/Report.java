@@ -568,6 +568,18 @@ public class Report extends javax.swing.JFrame {
         jPanel2.setVisible(false);
         this.populateComboBoxWithVisiteurs(); // CONSULTATION INIT
         this.haveMedicaments();
+        
+        String userRole = ConnectionManager.getUserRole();
+        if(userRole.equals("Responsable")){
+            System.out.println("Responsable");
+            jButton2.setVisible(false);
+        }
+        else if(userRole.equals("Délégué")){
+            System.out.println("Délégué");
+        }else{
+            System.out.println("Visiteur");
+        }
+        
     }
 
     private void synchroCheck() {
@@ -736,10 +748,10 @@ public class Report extends javax.swing.JFrame {
         jComboBox4.addItem(new ComboBoxItem("0", "SELECTIONNEZ"));
         
         for (int i = 0; i < tableVisiteurs.length; i++) {
-            TreeMap< String, Object> treePraticien = (TreeMap< String, Object>) tableVisiteurs[i];
-            String pra_id = (String) treePraticien.get("VIS_MATRICULE");
-            String pra_nom = (String) treePraticien.get("VIS_NOM");
-            String pra_prenom = (String) treePraticien.get("VIS_PRENOM");
+            TreeMap< String, Object> treeVisiteur = (TreeMap< String, Object>) tableVisiteurs[i];
+            String pra_id = (String) treeVisiteur.get("VIS_MATRICULE");
+            String pra_nom = (String) treeVisiteur.get("VIS_NOM");
+            String pra_prenom = (String) treeVisiteur.get("VIS_PRENOM");
             jComboBox4.addItem(new ComboBoxItem(pra_id, pra_nom + " " + pra_prenom));
         }
     }

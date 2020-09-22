@@ -34,6 +34,9 @@ public class ConnectionManager {
     private static Connection connection = null;
     private static boolean isAuth = false;
     private static String userMatricule = null;
+    private static String userRole = null;
+    private static String userRegCode = null;
+    private static String userSecCode = null;
 
     private static void connect() {
         try{
@@ -64,21 +67,52 @@ public class ConnectionManager {
         con = ConnectionManager.getConnection();
         try{
             stmt = (Statement) con.createStatement();
-            String req= "SELECT VIS_MATRICULE, VIS_DATEEMBAUCHE FROM visiteur WHERE VIS_NOM = '"+ login +"';";
+//            String req= "SELECT VIS_MATRICULE, VIS_DATEEMBAUCHE FROM visiteur WHERE VIS_NOM = '"+ login +"';";
+            
+//            String req=   "SELECT VIS_MATRICULE, VIS_DATEEMBAUCHE "
+//                        + "FROM travailler tr"
+//                        + "INNER JOIN ( "
+//                            + "SELECT VIS_MATRICULE, MAX(jjmmaa) AS maxDate "
+//                            + "GROUP BY VIS_MATRICULE "
+//                        + ") groupetr "
+//                        + "ON tr.VIS_MATRICULE = groupetr.VIS_MATRICULE "
+//                        + "AND tr.jjmmaa = groupetr.maxDate";
+            
+            String req=   "SELECT trava.REG_CODE, trava.TRA_ROLE, `region`.REG_NOM, `region`.`SEC_CODE` AS SECTEUR_CODE, `secteur`.`SEC_LIBELLE`, `visiteur`.* "
+                        + "FROM ("
+                        + "    SELECT tr.* "
+                        + "    FROM `travailler` tr "
+                        + "    JOIN ("
+                        + "        SELECT VIS_MATRICULE, MAX(jjmmaa) AS maxDate "
+                        + "        FROM `travailler` "
+                        + "        GROUP BY VIS_MATRICULE    ) groupetr "
+                        + "    ON tr.VIS_MATRICULE = groupetr.VIS_MATRICULE "
+                        + "    AND tr.jjmmaa = groupetr.maxDate "
+                        + ") AS trava, `region`, `secteur`, `visiteur` "
+                        + "WHERE `region`.REG_CODE = trava.REG_CODE  "
+                        + "AND `region`.SEC_CODE = `secteur`.SEC_CODE "
+                        + "AND trava.VIS_MATRICULE = `visiteur`.VIS_MATRICULE "
+                        + "AND `visiteur`.VIS_NOM = '"+ login +"';";
+            
+            
             rs = stmt.executeQuery(req);
             while(rs.next()){
                 String date_embauche = rs.getString("VIS_DATEEMBAUCHE");
                 String date_embauche_notime = date_embauche.substring(0, 10); //convertion datetime en time
-
+                
                 if (password.equals(date_embauche_notime)) {
                     ConnectionManager.isAuth = true;
                     ConnectionManager.userMatricule = rs.getString("VIS_MATRICULE");
+                    ConnectionManager.userRole = rs.getString("TRA_ROLE");
+                    ConnectionManager.userRegCode = rs.getString("REG_CODE");
+                    ConnectionManager.userSecCode = rs.getString("SECTEUR_CODE");
                 }
             }
             rs.close();
             stmt.close();
         }catch(SQLException e){
             System.out.println("Failed to create connection statement");
+            System.out.print(e);
         }finally{
             /*if (con != null) {
                 try {
@@ -93,6 +127,18 @@ public class ConnectionManager {
     
     public static String getUserMatricule(){
         return ConnectionManager.userMatricule;
+    }
+    
+    public static String getUserRole(){
+        return ConnectionManager.userRole;
+    }
+    
+    public static String getRegCode(){
+        return ConnectionManager.userRegCode;
+    }
+    
+    public static String getSecCode(){
+        return ConnectionManager.userSecCode;
     }
 
     public static Object[] requestRead(String req){
@@ -112,7 +158,7 @@ public class ConnectionManager {
             String[] tableColTypeNames = new String[resColCount];
             
             for(int i = 1; i <= resColCount; i++){
-                System.out.println(resultMeta.getColumnName(i)+" \t "+resultMeta.getColumnType(i)+" \t "+resultMeta.getColumnTypeName(i));
+//                System.out.println(resultMeta.getColumnName(i)+" \t "+resultMeta.getColumnType(i)+" \t "+resultMeta.getColumnTypeName(i));
                 tableColNames[i-1] = resultMeta.getColumnName(i);
                 tableColTypes[i-1] = resultMeta.getColumnType(i);
                 tableColTypeNames[i-1] = resultMeta.getColumnTypeName(i);
@@ -131,6 +177,9 @@ public class ConnectionManager {
                     try{
                         switch(tableColTypes[j]){
                             case -7:
+                                resLine.put(tableColNames[j], rs.getInt(tableColNames[j]));
+                                break;
+                            case -5:
                                 resLine.put(tableColNames[j], rs.getInt(tableColNames[j]));
                                 break;
                             case 4:
@@ -162,6 +211,7 @@ public class ConnectionManager {
             stmt.close();
         } catch (SQLException e) {
             System.out.println("Failed to create connection statement");
+            e.printStackTrace();
         } finally {
             if (con != null) {
                 try {

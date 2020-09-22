@@ -35,7 +35,9 @@ public class Menu extends JFrame {
     private final JButton button4 = new JButton();
     private final JButton button5 = new JButton();
     private final JButton button7 = new JButton();
+    private final JButton button8 = new JButton();
     private final JLabel label1 = new JLabel("Comptes-Rendus");
+    private final JLabel label8 = new JLabel("Statistiques");
     private final JLabel label2 = new JLabel("Visiteurs");
     private final JLabel label3 = new JLabel("Praticiens");
     private final JLabel label4 = new JLabel("Medicaments");
@@ -63,6 +65,7 @@ public class Menu extends JFrame {
         button4.setPreferredSize(new Dimension(20, 20));
         button5.setPreferredSize(new Dimension(20, 20));
         button7.setPreferredSize(new Dimension(20, 20));
+        button8.setPreferredSize(new Dimension(20, 20));
         
         button1.addActionListener(new ActionListener() {
             @Override
@@ -85,11 +88,22 @@ public class Menu extends JFrame {
                 System.exit(0);
             }
         });
+        button8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent event) {
+                ReportStat reportStat = new ReportStat();
+                reportStat.setVisible(true);
+            }
+        });
         
         JPanel panWrap1 = new JPanel();
         panWrap1.setLayout(new FlowLayout(FlowLayout.LEFT));  
         panWrap1.add(button1);
         panWrap1.add(label1);
+        JPanel panWrap8 = new JPanel();
+        panWrap8.setLayout(new FlowLayout(FlowLayout.LEFT)); 
+        panWrap8.add(button8);
+        panWrap8.add(label8);
         JPanel panWrap2 = new JPanel();
         panWrap2.setLayout(new FlowLayout(FlowLayout.LEFT)); 
         panWrap2.add(button2);
@@ -113,6 +127,7 @@ public class Menu extends JFrame {
         
         center.setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
         center.add(panWrap1);
+        center.add(panWrap8);
         center.add(panWrap2);
         center.add(panWrap3);
         center.add(panWrap4);
