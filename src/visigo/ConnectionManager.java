@@ -12,12 +12,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.TreeMap;
+
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
 
 /**
  *
@@ -25,12 +25,11 @@ import java.util.TreeMap;
  */
 public class ConnectionManager {
 
-    private static String driverName = "com.mysql.jdbc.Driver";
-    //private static String url = "jdbc:mysql://localhost:3306/visigo";
-    //private static String url = "jdbc:mysql://localhost:3306/visigo?autoReconnect=true&useSSL=false";
-    private static String url = "jdbc:mysql://localhost:3306/gsb_cr?autoReconnect=true&useSSL=false";
-    private static String username = "root";
-    private static String password = "";
+    static int lport = 3306; // default port
+    static String rhost = "localhost"; //even for distant connection via SSH
+    static int rport; // used for forwading port on distant server
+    static boolean isDistantDB = true;
+    
     private static Connection connection = null;
     private static boolean isAuth = false;
     private static String userMatricule = null;
@@ -39,25 +38,87 @@ public class ConnectionManager {
     private static String userSecCode = null;
 
     private static void connect() {
+        if(ConnectionManager.isDistantDB){
+            try {
+                go();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+        Connection con = null;
+        String driver = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://" + rhost + ":" + lport + "/";
+        String db = "gsb_cr";
+        String dbUser;
+        String dbPasswd;
+        
+        if(ConnectionManager.isDistantDB){
+            dbUser = "gsb_cr";
+            dbPasswd = "5ilver-Stone";
+        }else{
+            dbUser = "root";
+            dbPasswd = "";
+        }
+
         try{
-            Class.forName(driverName);
+            Class.forName(driver);
             try{
-                ConnectionManager.connection = DriverManager.getConnection(url, username, password);
+                con = DriverManager.getConnection(url + db +"?autoReconnect=true&useSSL=false", dbUser, dbPasswd);
             }catch(SQLException e){
                 System.out.println("Failed to create the database connection");
+                System.out.print(e);
             }
-        }catch(ClassNotFoundException e){
+        } catch (Exception e) {
             System.out.println("Failed to reach mysql JDBC driver");
+            e.printStackTrace();
+        }
+        
+        ConnectionManager.connection = con;
+    }
+
+    /**
+     * Fonction permettant la connexion SSH
+     */
+    public static void go() {
+        String user = "root";
+        String password = "1Xbk#Y?3nb";
+        String host = "82.165.126.248";
+        int port = 22;
+ 
+        try {
+            JSch jsch = new JSch();
+            Session session = jsch.getSession(user, host, port);
+            lport = 4321;
+            rhost = "localhost";
+            rport = 3306;
+            session.setPassword(password);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+            int assinged_port = session.setPortForwardingL(lport, rhost, rport);
+            System.out.println("localhost:" + assinged_port + " -> " + rhost + ":" + rport);
+        } catch (Exception e) {
+            System.err.print(e);
         }
     }
     
+    /**
+     * Récupération de la connexion
+     * @return
+     */
     public static Connection getConnection() {
-        //if(ConnectionManager.connection == null){
+        if(ConnectionManager.connection == null){
             ConnectionManager.connect();
-        //}
+        }
         return ConnectionManager.connection;
     }
     
+    /**
+     * Authentification de l'utilisateur
+     * @param login
+     * @param password
+     * @return
+     */
     public static boolean auth(String login, String password) {
         
         Connection con;
@@ -67,16 +128,6 @@ public class ConnectionManager {
         con = ConnectionManager.getConnection();
         try{
             stmt = (Statement) con.createStatement();
-//            String req= "SELECT VIS_MATRICULE, VIS_DATEEMBAUCHE FROM visiteur WHERE VIS_NOM = '"+ login +"';";
-            
-//            String req=   "SELECT VIS_MATRICULE, VIS_DATEEMBAUCHE "
-//                        + "FROM travailler tr"
-//                        + "INNER JOIN ( "
-//                            + "SELECT VIS_MATRICULE, MAX(jjmmaa) AS maxDate "
-//                            + "GROUP BY VIS_MATRICULE "
-//                        + ") groupetr "
-//                        + "ON tr.VIS_MATRICULE = groupetr.VIS_MATRICULE "
-//                        + "AND tr.jjmmaa = groupetr.maxDate";
             
             String req=   "SELECT trava.REG_CODE, trava.TRA_ROLE, `region`.REG_NOM, `region`.`SEC_CODE` AS SECTEUR_CODE, `secteur`.`SEC_LIBELLE`, `visiteur`.* "
                         + "FROM ("
@@ -93,7 +144,6 @@ public class ConnectionManager {
                         + "AND `region`.SEC_CODE = `secteur`.SEC_CODE "
                         + "AND trava.VIS_MATRICULE = `visiteur`.VIS_MATRICULE "
                         + "AND `visiteur`.VIS_NOM = '"+ login +"';";
-            
             
             rs = stmt.executeQuery(req);
             while(rs.next()){
@@ -113,41 +163,53 @@ public class ConnectionManager {
         }catch(SQLException e){
             System.out.println("Failed to create connection statement");
             System.out.print(e);
-        }finally{
-            /*if (con != null) {
-                try {
-                    con.close(); //fermeture connexion
-                } catch (SQLException e) {
-                    //si erreur lors de la fermeture, on l'ignore
-                }
-            }*/
         }
         return ConnectionManager.isAuth;
     }
     
+    /**
+     * Renvoi le matricule de l'utilisateur connecté
+     * @return
+     */
     public static String getUserMatricule(){
         return ConnectionManager.userMatricule;
     }
     
+    /**
+     * Renvoi le role de l'utilisateur connecté
+     * @return
+     */
     public static String getUserRole(){
         return ConnectionManager.userRole;
     }
     
+    /**
+     * Renvoi le code de région de l'utilisateur connecté
+     * @return
+     */
     public static String getRegCode(){
         return ConnectionManager.userRegCode;
     }
     
+    /**
+     * Renvoi le role de secteur l'utilisateur connecté
+     * @return
+     */
     public static String getSecCode(){
         return ConnectionManager.userSecCode;
     }
 
+    /**
+     * Procède à une requète en lecture
+     * @param req
+     * @return
+     */
     public static Object[] requestRead(String req){
         Object[] resTab = null;
         
         Connection con = ConnectionManager.getConnection();
         try {
             Statement stmt = (Statement) con.createStatement();
-//            String req = "SELECT PRA_NUM, PRA_NOM, PRA_PRENOM, PRA_CP FROM praticien ORDER BY PRA_NOM;";
             ResultSet rs = stmt.executeQuery(req);
 
             //On récupère les MetaData
@@ -158,7 +220,6 @@ public class ConnectionManager {
             String[] tableColTypeNames = new String[resColCount];
             
             for(int i = 1; i <= resColCount; i++){
-//                System.out.println(resultMeta.getColumnName(i)+" \t "+resultMeta.getColumnType(i)+" \t "+resultMeta.getColumnTypeName(i));
                 tableColNames[i-1] = resultMeta.getColumnName(i);
                 tableColTypes[i-1] = resultMeta.getColumnType(i);
                 tableColTypeNames[i-1] = resultMeta.getColumnTypeName(i);
@@ -212,71 +273,37 @@ public class ConnectionManager {
         } catch (SQLException e) {
             System.out.println("Failed to create connection statement");
             e.printStackTrace();
-        } finally {
-            if (con != null) {
-                try {
-                    con.close(); //fermeture connexion
-                } catch (SQLException e) {
-                    //si erreur lors de la fermeture, on l'ignore
-                }
-            }
         }
         return resTab;
     }
     
+    /**
+     * Procède à une requète en écriture
+     * @param req
+     * @param requestValues
+     * @return
+     */
     public static int requestWrite(String req, TreeMap < Integer, Object > requestValues){
         int generatedKey = 0;
         Connection con = ConnectionManager.getConnection();
         try {
             PreparedStatement preparedStatement = con.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
             
-//            Set<String> keys = tm.keySet();
-//            for(String requestValue: requestValues){
-//                preparedStatement.setObject(, tm.get(key));
-//            }
-            
             // Parcours des entrées (clef, valeur)
             for (Map.Entry < Integer, Object > requestValue : requestValues.entrySet()) {
-                    System.out.println("Clé : "+requestValue.getKey()+" Valeur : "+requestValue.getValue());
                     preparedStatement.setObject(requestValue.getKey(), requestValue.getValue());
             }
-            
-            /*preparedStatement.setString(1, ConnectionManager.getUserMatricule());
-            preparedStatement.setInt(2, pra_num);
-            preparedStatement.setInt(3, rap_estremplace);
-            if(pra_num_remplacant == 0){
-                preparedStatement.setNull(4, Types.NULL);
-            }else{
-                preparedStatement.setInt(4, pra_num_remplacant);
-            }
-            preparedStatement.setDate(5, date_sql);
-            preparedStatement.setString(6, rap_bilan);
-            preparedStatement.setString(7, rap_motif);*/
-            preparedStatement.executeUpdate(); 
+            preparedStatement.executeUpdate();
             
             ResultSet rs = preparedStatement.getGeneratedKeys();
-            
-            
             if (rs.next()) {
                 generatedKey = rs.getInt(1);
             }
-//            System.out.println("Inserted record's ID: " + generatedKey);
-            
-            
             preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Failed to create connection statement");
             System.out.println(e);
-        } finally {
-            if (con != null) {
-                try {
-                    con.close(); //fermeture connexion
-                } catch (SQLException e) {
-                    //si erreur lors de la fermeture, on l'ignore
-                }
-            }
         }
         return generatedKey;
     }
-
 }

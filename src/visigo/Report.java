@@ -7,8 +7,6 @@ package visigo;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.DateFormat;
@@ -19,19 +17,14 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -563,7 +556,10 @@ public class Report extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
-
+    
+    /**
+     * Initialisation
+     */
     private void proceed() {
         jPanel2.setVisible(false);
         this.populateComboBoxWithVisiteurs(); // CONSULTATION INIT
@@ -571,17 +567,13 @@ public class Report extends javax.swing.JFrame {
         
         String userRole = ConnectionManager.getUserRole();
         if(userRole.equals("Responsable")){
-            System.out.println("Responsable");
             jButton2.setVisible(false);
         }
-        else if(userRole.equals("Délégué")){
-            System.out.println("Délégué");
-        }else{
-            System.out.println("Visiteur");
-        }
-        
     }
-
+    
+    /**
+     * Synchronisation check "remplacé" et activation du champ de la ComboBox
+     */
     private void synchroCheck() {
         if (jCheckBox1.isSelected()) {
             jComboBox3.setEnabled(true);
@@ -591,10 +583,21 @@ public class Report extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Rempli la ComboBox avec les praticiens passés en argument
+     * @param jComboBox
+     * @param tablePraticiens
+     */
     private void populateComboBoxWithPraticiens(JComboBox jComboBox, Object[] tablePraticiens) {
         populateComboBoxWithPraticiens(jComboBox, tablePraticiens, 0);
     }
 
+    /**
+     * Rempli la ComboBox avec les praticiens passés en argument sans ajouter le praticien ayant le numéro passé en arguement
+     * @param jComboBox
+     * @param tablePraticiens
+     * @param praNumToAvoid
+     */
     private void populateComboBoxWithPraticiens(JComboBox jComboBox, Object[] tablePraticiens, int praNumToAvoid) {
         for (int i = 0; i < tablePraticiens.length; i++) {
             boolean isOkToAdd = true;
@@ -615,6 +618,9 @@ public class Report extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Rafraichit le contenu de la ComboBox de sélection du médecin remplacé
+     */
     private void refreshComboBox3() {
         jComboBox3.removeAllItems();
         jComboBox3.addItem(new ComboBoxItem("0", "NON CONNU"));
@@ -624,10 +630,16 @@ public class Report extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Vérifie et ajoute en base les données contenues dans les champs
+     */
     private void addInBase() {
         this.updateInBase(0);
     }
 
+    /**
+     * Vérifie et met à jour en base les données contenues dans les champs
+     */
     private void updateInBase(int rapNumToUpdate) {
         boolean isValid = true;
         String errorMsg = null;
@@ -661,14 +673,12 @@ public class Report extends javax.swing.JFrame {
         if (rap_motif.equals("")) {isValid = false;} //si motif vide
         if (rap_date.equals("")) {isValid = false;} //si date vide
         
-//        jTable1.();
         if(!this.isValideJTableEchantillon()){
             isValid = false;
             errorMsg = "champ non conforme dans table échantillons";
         }
 
         if (isValid) {
-
             TreeMap< Integer, Object> requestValues = new TreeMap<>();
             requestValues.put(1, ConnectionManager.getUserMatricule());
             requestValues.put(2, pra_num);
@@ -742,6 +752,9 @@ public class Report extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Rempli la ComboBox de sélection d'un visiteur
+     */
     private void populateComboBoxWithVisiteurs() {
         String req2 = "SELECT VIS_MATRICULE, VIS_NOM, VIS_PRENOM FROM visiteur ORDER BY VIS_NOM;";
         Object[] tableVisiteurs = ConnectionManager.requestRead(req2);
@@ -756,6 +769,9 @@ public class Report extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Rafraichit la liste des rapports du visiteur sélectionné en ComboBox
+     */
     private void refreshRapportsList() {
         String selectedVisiteurMatricule = ((ComboBoxItem) jComboBox4.getSelectedItem()).getKey();
         DefaultListModel<ComboBoxItem> l1 = new DefaultListModel<>();
@@ -775,6 +791,9 @@ public class Report extends javax.swing.JFrame {
         jList1.setModel(l1);
     }
 
+    /**
+     * Formate et affiche un formulaire vierge de rapport
+     */
     private void newRapport() {
         this.reinitFormRapport();
 
@@ -790,6 +809,9 @@ public class Report extends javax.swing.JFrame {
         populateJTable(0, true);
     }
 
+    /**
+     * Réinitialise le formatage du formulaire de rapport
+     */
     private void reinitFormRapport() {
 
         String req = "SELECT PRA_NUM, PRA_NOM, PRA_PRENOM, PRA_CP FROM praticien ORDER BY PRA_NOM;";
@@ -819,7 +841,10 @@ public class Report extends javax.swing.JFrame {
 
         setRapportNormal();
     }
-
+    
+    /**
+     * Formate et affiche le formulaire d'un rapport existant
+     */
     private void displayRapport(int rapportNum) {
         this.reinitFormRapport();
 
@@ -881,6 +906,9 @@ public class Report extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Formate le formulaire pour être éditable
+     */
     public void setRapportNormal() {
         Tools.setComboBoxNormal(jComboBox1);
         jCheckBox1.setEnabled(true);
@@ -897,6 +925,9 @@ public class Report extends javax.swing.JFrame {
         jButton9.setVisible(false);
     }
 
+    /**
+     * Formate le formulaire pour ne pas être éditable
+     */
     public void setRapportReadOnly() {
         Tools.setComboBoxReadOnly(jComboBox1);
         jCheckBox1.setEnabled(false);
@@ -912,6 +943,10 @@ public class Report extends javax.swing.JFrame {
         jButton9.setVisible(false);
     }
 
+    /**
+     * Vérifie si un rapport est en cours d'édition et si nous pouvons le fermer
+     * @return isCanSwitch
+     */
     public boolean isCanSwitchDisplay() {
         boolean isCanSwitch = false;
 
@@ -936,10 +971,12 @@ public class Report extends javax.swing.JFrame {
 
         private JComboBox<String> combo;
 
+        /**
+         *
+         */
         public ComboCellEditor() {
             super(new JComboBox<>());  // on créé le DefaultCellEditor en lui passant la combo
             combo = (JComboBox<String>) getComponent();  // je récupère la combo passé dans le constructeur juste avant parce que je vais avoir besoin de travailler avec plus tard (je la stocke dans un attribut donc)
-            // combo.setEditable(true); // éventuellement pour rendre la saisie libre (ici on peut aussi ajouter l'autocompletion)
             combo.addFocusListener(new FocusAdapter() { // j'enregistre un focuslistener qui va réagir quand la combo prend le focus pour ouvrir automatiquement la liste de la combo (dès qu'on va commencer à taper dans le champ, la combo va passer en édition et donc afficher la liste déroulante)
                 @Override
                 public void focusGained(FocusEvent arg0) {
@@ -973,30 +1010,41 @@ public class Report extends javax.swing.JFrame {
             }
             return renderCombo;
         }
-
     }
 
+    /**
+     * Requêtage de la table des médicaments
+     */
     public void haveMedicaments() {
         String req4 = "SELECT * FROM medicament ORDER BY MED_NOMCOMMERCIAL;";
         this.tableMedicaments = ConnectionManager.requestRead(req4);
     }
 
+    /**
+     * Remplissage des items de chaque Combobox de sélection du médicament du JTable des échantillons
+     * @param value
+     * @return
+     */
     public static String[] loadValues(int value) {
         String[] comboMedicData = new String[Report.tableMedicaments.length + 1];
 
         comboMedicData[0] = "SELECT";
         for (int i = 0; i < Report.tableMedicaments.length; i++) {
-
             TreeMap< String, Object> treeMedicament = (TreeMap< String, Object>) Report.tableMedicaments[i];
             String medDepotLegal = (String) treeMedicament.get("MED_DEPOTLEGAL");
             String medNomCommercial = (String) treeMedicament.get("MED_NOMCOMMERCIAL");
-
+            
             comboMedicData[i + 1] = medNomCommercial;
         }
 
         return comboMedicData;
     }
     
+    /**
+     * Remplissage du tableau des échantillons offerts
+     * @param rapNum
+     * @param editable
+     */
     public void populateJTable(int rapNum, boolean editable) {
         Object[][] data;
         if(rapNum == 0){
@@ -1048,6 +1096,10 @@ public class Report extends javax.swing.JFrame {
         jTable1.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE); // used to stop editing / take consideration of last string insert when click to submit without the need to loose the focus by clicking on other cell
     }
 
+    /**
+     * Vérifie si les données des échantillons renseignés sont valides 
+     * @return isValid
+     */
     public boolean isValideJTableEchantillon() {
         boolean isValid = true;
         
@@ -1061,13 +1113,10 @@ public class Report extends javax.swing.JFrame {
             }
             
             if(!Tools.isNumeric(value3)){
-                System.out.println(value3+" sfds");
                 isValid = false;
             }else{
-                System.out.println(value3+" oili");
                 if(Integer.parseInt(value3) <= 0){
                     isValid = false;
-                    System.out.println(value3+" jhgjh");
                 }
             }
         }

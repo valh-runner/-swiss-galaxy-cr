@@ -23,7 +23,6 @@ public class ReportStat extends javax.swing.JFrame {
     /** Creates new form ReportStat */
     public ReportStat() {
         initComponents();
-        
         this.populateComboBoxSubject();
     }
 
@@ -207,8 +206,6 @@ public class ReportStat extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
-        
         if (!jList1.isSelectionEmpty()) {
             String selectedSubject = ((ComboBoxItem) jComboBox4.getSelectedItem()).getKey();
             String selectedKey = ((ComboBoxItem) jList1.getSelectedValue()).getKey();
@@ -223,8 +220,6 @@ public class ReportStat extends javax.swing.JFrame {
                 this.displayVisiteurStats(selectedKey);
             }
         }
-        
-        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -280,6 +275,9 @@ public class ReportStat extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Remplissage de la ComboBox des sujets
+     */
     private void populateComboBoxSubject() {
         String userRole = ConnectionManager.getUserRole();
         
@@ -294,6 +292,9 @@ public class ReportStat extends javax.swing.JFrame {
         jComboBox4.addItem(new ComboBoxItem("VISITEUR", "VISITEUR"));
     }
     
+    /**
+     * Rafraichissement du remplissage des sous-sujets selon le sujet sélèctionné
+     */
     private void refreshListSubSubject() {
         String selectedSubject = ((ComboBoxItem) jComboBox4.getSelectedItem()).getKey();
         DefaultListModel<ComboBoxItem> l1 = new DefaultListModel<>();
@@ -366,7 +367,6 @@ public class ReportStat extends javax.swing.JFrame {
                             + "WHERE `region`.REG_CODE = trava.REG_CODE  "
                             + "AND `region`.SEC_CODE = `secteur`.SEC_CODE "
                             + "AND trava.VIS_MATRICULE = `visiteur`.VIS_MATRICULE;";
-                
                 Object[] tableVisiteurs = ConnectionManager.requestRead(req2);
                 
                 boolean okToAdd;
@@ -400,6 +400,10 @@ public class ReportStat extends javax.swing.JFrame {
         jList1.setModel(l1);
     }
     
+    /**
+     * Affichage des statistiques du visiteur selon le matricule passé en argument
+     * @param visMatricule
+     */
     private void displayVisiteurStats(String visMatricule){
     
         String req = "SELECT "
@@ -408,7 +412,6 @@ public class ReportStat extends javax.swing.JFrame {
                     + "FROM rapport_visite "
                     + "WHERE VIS_MATRICULE = '"+ visMatricule +"' "
                     + "GROUP BY RAP_MONTH;";
-        
         Object[] tableVisiteurs = ConnectionManager.requestRead(req);
 
         String req2 = "SELECT "
@@ -419,12 +422,15 @@ public class ReportStat extends javax.swing.JFrame {
                     + "AND realiser.VIS_MATRICULE = visiteur.VIS_MATRICULE "
                     + "AND visiteur.VIS_MATRICULE = '"+ visMatricule +"' "
                     + "GROUP BY AC_MONTH;";
-        
         Object[] tableActivites = ConnectionManager.requestRead(req2);
         
         this.display(tableVisiteurs, tableActivites);
     }
     
+    /**
+     * Affichage des statistiques de la région selon le code région passé en argument
+     * @param regCode
+     */
     private void displayRegionStats(String regCode){
     
         String req = "SELECT trava.REG_CODE, "
@@ -446,7 +452,6 @@ public class ReportStat extends javax.swing.JFrame {
                     + "AND `visiteur`.VIS_MATRICULE = `rapport_visite`.VIS_MATRICULE "
                     + "AND `region`.REG_CODE = '"+ regCode +"' "
                     + "group by RAP_MONTH;";
-        
         Object[] tableMonthRegionNbRapports = ConnectionManager.requestRead(req);
 
         String req2 = "SELECT trava.REG_CODE, "
@@ -469,12 +474,15 @@ public class ReportStat extends javax.swing.JFrame {
                     + "AND `realiser`.AC_NUM = `activite_compl`.AC_NUM "
                     + "AND `region`.REG_CODE = '"+ regCode +"' "
                     + "group by AC_MONTH;";
-        
         Object[] tableMonthRegionNbActivites = ConnectionManager.requestRead(req2);
         
         this.display(tableMonthRegionNbRapports, tableMonthRegionNbActivites);
     }
     
+    /**
+     * Affichage des statistiques du secteur selon le code de secteur passé en argument
+     * @param secCode
+     */
     private void displaySecteurStats(String secCode){
     
         String req = "SELECT `secteur`.`SEC_CODE`, "
@@ -497,7 +505,6 @@ public class ReportStat extends javax.swing.JFrame {
                     + "AND `visiteur`.VIS_MATRICULE = `rapport_visite`.VIS_MATRICULE "
                     + "AND `secteur`.`SEC_CODE` = '"+ secCode +"' "
                     + "group by RAP_MONTH, `secteur`.SEC_CODE; ";
-        
         Object[] tableMonthSecteurNbRapports = ConnectionManager.requestRead(req);
 
         String req2 = "SELECT `secteur`.`SEC_CODE`, "
@@ -521,13 +528,16 @@ public class ReportStat extends javax.swing.JFrame {
                 + "AND `realiser`.AC_NUM = `activite_compl`.AC_NUM "
                 + "AND `secteur`.`SEC_CODE` = 'E' "
                 + "group by AC_MONTH, `secteur`.`SEC_CODE`; ";
-
-        
         Object[] tableMonthSecteurNbActivites = ConnectionManager.requestRead(req2);
         
         this.display(tableMonthSecteurNbRapports, tableMonthSecteurNbActivites);
     }
     
+    /**
+     * Formate et affiche les statistiques dont les données sont passées en arguments
+     * @param tableNbRapports
+     * @param tableNbActivites
+     */
     private void display(Object[] tableNbRapports, Object[] tableNbActivites){
         SimpleAttributeSet style_normal = new SimpleAttributeSet();
         
@@ -545,16 +555,13 @@ public class ReportStat extends javax.swing.JFrame {
             String strCurrentYear;
             String strDate;
             for (int i = 0; i < 36; i++) {
-//                currentMonth--;
                 if(currentMonth == 0){
                     currentMonth = 12;
                     currentYear--;
                 }
                 strCurrentMonth = String.valueOf(currentMonth);
                 strCurrentYear = String.valueOf(currentYear);
-                if(strCurrentMonth.length() == 1){
-                    strCurrentMonth = "0"+strCurrentMonth; 
-                }
+                if(strCurrentMonth.length() == 1){ strCurrentMonth = "0"+strCurrentMonth; }
                 strDate = strCurrentYear +"-"+ strCurrentMonth;
                 
                 int nbRap = 0;
@@ -570,7 +577,6 @@ public class ReportStat extends javax.swing.JFrame {
                 int k = 0;
                 while( k < tableNbActivites.length ) {
                     k++;
-                    System.out.println(tableNbActivites.length);
                     TreeMap< String, Object> treeActivite = (TreeMap< String, Object>) tableNbActivites[k];
                     String acMonth = (String) treeActivite.get("AC_MONTH");
                     if(acMonth.equals(strDate)){
@@ -579,7 +585,6 @@ public class ReportStat extends javax.swing.JFrame {
                 }
                 
                 doc.insertString(doc.getLength(), strDate+" | "+nbRap+" | "+nbAct+"\n\n", style_normal);
-                
                 currentMonth--;
             }
             

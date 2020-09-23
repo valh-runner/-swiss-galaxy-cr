@@ -14,6 +14,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -52,11 +53,9 @@ public class Menu extends JFrame {
         this.setLocationRelativeTo(null);
 
         container.setLayout(new BorderLayout());
-        //container.setBackground(Color.white);
 
         JPanel center = new JPanel();
         GridLayout gridLayout = new GridLayout(5, 1);
-        //gridLayout.preferredLayoutSize();
         center.setLayout(gridLayout);
         
         button1.setPreferredSize(new Dimension(20, 20));
@@ -78,13 +77,18 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent event) {                
                 SwingUtilities.invokeLater(() -> {
-                    WebViewFrais webViewSample2 = new WebViewFrais();
+                    WebViewFrais webViewFrais = new WebViewFrais();
                 });
             }
         });
         button5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent event) {
+                try {
+                    ConnectionManager.getConnection().close(); //fermeture connexion
+                } catch (SQLException e) {
+                    //si erreur lors de la fermeture, on l'ignore
+                }
                 System.exit(0);
             }
         });
@@ -135,9 +139,6 @@ public class Menu extends JFrame {
         center.add(panWrap5);
         container.add(center, BorderLayout.CENTER);
 
-        //ImageIcon icon = new ImageIcon("logo.jpg");
-        /*Image image = new ImageIcon("logo.jpg").getImage().getScaledInstance(113, 72, Image.SCALE_SMOOTH);
-        ImageIcon imageIcon = new ImageIcon(image);*/
         ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg")); //chargement path friendly
         Image image = imageIcon.getImage().getScaledInstance(113, 72, Image.SCALE_SMOOTH); //redimensionnement
         ImageIcon imageIcon2 = new ImageIcon(image); //remise en ImageIcon

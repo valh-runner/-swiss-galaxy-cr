@@ -24,22 +24,20 @@ public class Window extends JFrame {
 
     private final JPanel container = new JPanel();
     private final JLabel label1 = new JLabel("Identifiez vous");
-    //private JTextField field1 = new JTextField("");
-    private JTextField field1 = new JTextField("Andre"); //TODO :enlever texte par défaut
-    //private JTextField field2 = new JTextField("");
-    private JTextField field2 = new JTextField("1991-08-26"); //TODO :enlever texte par défaut
+//    private JTextField field1 = new JTextField("");
+    private JTextField field1 = new JTextField("Andre");
+//    private JTextField field2 = new JTextField("");
+    private JTextField field2 = new JTextField("1991-08-26");
     private final JButton button1 = new JButton("OK");
     private JLabel label2 = new JLabel();
 
     public Window() {
-
         this.setTitle("VisiGo");
         this.setSize(600, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
         container.setLayout(new BorderLayout());
-        //container.setBackground(Color.white);
 
         JPanel center = new JPanel();
         Box box1 = Box.createVerticalBox();

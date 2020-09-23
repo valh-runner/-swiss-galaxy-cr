@@ -19,6 +19,11 @@ import javax.swing.Timer;
  */
 public class Tools {
     
+    /**
+     * Sélectionne l'item Key de la comboBox passée en argumment
+     * @param comboBox
+     * @param key
+     */
     public static void setSelectedValue(JComboBox comboBox, int key){
         ComboBoxItem item;
         for (int i = 0; i < comboBox.getItemCount(); i++){
@@ -30,6 +35,11 @@ public class Tools {
         }
     }
     
+    /**
+     * Affiche un message temporaire dans le JLabel passé en arguement
+     * @param jLabel
+     * @param message
+     */
     public static void displayMessageTemporary(JLabel jLabel, String message){
         
         Timer autoHideTimer = new Timer(5000, new ActionListener() {
@@ -46,27 +56,37 @@ public class Tools {
         autoHideTimer.restart();
     }
     
+    /**
+     * Rend non éditable la ComboBox passée en argument
+     * @param jComboBox
+     */
     public static void setComboBoxReadOnly(JComboBox jComboBox){
-//            jComboBox2.getEditor().getEditorComponent().setBackground(new Color(40,60,90));
         ((JTextField)jComboBox.getEditor().getEditorComponent()).setDisabledTextColor(new Color(51,51,51));
         jComboBox.setEnabled(false);
         jComboBox.setEditable(true);
     }
     
+    /**
+     * Rend éditable la ComboBox passée en argument
+     * @param jComboBox
+     */
     public static void setComboBoxNormal(JComboBox jComboBox){
         ((JTextField)jComboBox.getEditor().getEditorComponent()).setDisabledTextColor(new Color(184, 207, 229));
         jComboBox.setEditable(false);
         jComboBox.setEnabled(true);
     }
     
+    /**
+     * Vérifie si une chaîne représente un entier
+     * @param str
+     * @return isValid
+     */
     public static boolean isNumeric(String str) {
         boolean isValid = true;
         try{ Integer.parseInt(str); }
         catch(NumberFormatException nfe){ 
-            System.out.println(str +" est pas num");
             isValid = false;
         }
-        System.out.println(str +" est num");
         return isValid;
     }
 }
